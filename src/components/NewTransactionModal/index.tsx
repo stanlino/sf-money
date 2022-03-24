@@ -20,15 +20,21 @@ export function NewTransactionModal({ isOpen, onRequestClose } : NewTransactionM
   const amount = useRef<HTMLInputElement>({} as HTMLInputElement)
   const category = useRef<HTMLInputElement>({} as HTMLInputElement)
 
-  function handleCreateNewTransaction(event: FormEvent) {
+  async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault()
 
-    createTransaction({
+    await createTransaction({
       title: title.current?.value,
       type,
       amount: Number(amount.current?.value),
       category: category.current?.value
     })
+
+    title.current.value = ''
+    amount.current.value = ''
+    category.current.value = ''
+
+    onRequestClose()
   }
 
   return (
