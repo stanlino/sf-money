@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import closeImg from '../../assets/close.svg'
 import incomeImg from '../../assets/income.svg'
 import outcomeImg from '../../assets/outcome.svg'
-import { api } from '../../services/api'
+import { useTransactions } from '../../hooks/Transactions'
 import { Container, RadioBox, TransactionTypeContainer } from './styles'
 
 interface NewTransactionModalProps {
@@ -13,22 +13,22 @@ interface NewTransactionModalProps {
 
 export function NewTransactionModal({ isOpen, onRequestClose } : NewTransactionModalProps){
 
+  const { createTransaction } = useTransactions()
+
   const [type, setType] = useState('deposit')
   const title = useRef<HTMLInputElement>({} as HTMLInputElement)
-  const value = useRef<HTMLInputElement>({} as HTMLInputElement)
+  const amount = useRef<HTMLInputElement>({} as HTMLInputElement)
   const category = useRef<HTMLInputElement>({} as HTMLInputElement)
 
   function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault()
 
-    const data = {
+    createTransaction({
       title: title.current?.value,
       type,
-      value: value.current?.value,
+      amount: Number(amount.current?.value),
       category: category.current?.value
-    }
-
-    api.post('/transactions', data)
+    })
   }
 
   return (
@@ -52,7 +52,7 @@ export function NewTransactionModal({ isOpen, onRequestClose } : NewTransactionM
         />
 
         <input
-          ref={value}
+          ref={amount}
           type='number'
           placeholder='Valor'
         />
